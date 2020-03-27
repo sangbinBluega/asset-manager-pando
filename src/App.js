@@ -15,9 +15,8 @@ import VolumeUpIcon from "@material-ui/icons/VolumeUp";
 import VideocamIcon from "@material-ui/icons/Videocam";
 import SearchIcon from "@material-ui/icons/Search";
 import Toolbar from "@material-ui/core/Toolbar";
-//import IconButton from "@material-ui/core/IconButton";
-//import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
 import { Scrollbars } from "react-custom-scrollbars";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -89,6 +88,7 @@ function App() {
   });
 
   const [text, setText] = useState("");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     window.addEventListener(
@@ -172,6 +172,14 @@ function App() {
     setText(e.target.value);
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const onClickSet = pIdx => {
     assetData.data.some((item, index) => {
       if (pIdx === index) {
@@ -196,6 +204,8 @@ function App() {
         return pIdx === index;
       }
     });
+
+    setOpen(true);
   };
 
   const buildCards = pData => {
@@ -292,25 +302,19 @@ function App() {
           <Typography className={classes.title}>
             PANDO - ASSET MANAGER
           </Typography>
-          {/* <div>
-            <IconButton
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={onClickSet}
-              color="inherit"
-              classes={{
-                label: classes.label
-              }}
-            >
-              SET
-              <VerticalAlignTopIcon className={classes.setButton} />
-            </IconButton>
-          </div> */}
         </Toolbar>
       </AppBar>
       <Scrollbars>
         <div className={classes.content}>{buildCards(assetData)}</div>
       </Scrollbars>
+
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={open}
+        autoHideDuration={1000}
+        onClose={handleClose}
+        message="Success!"
+      ></Snackbar>
     </>
   );
 }
